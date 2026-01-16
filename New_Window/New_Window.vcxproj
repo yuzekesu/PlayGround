@@ -127,30 +127,44 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="ClipBoard.cpp" />
+    <ClCompile Include="Float3.cpp" />
+    <ClCompile Include="Float4x4.cpp" />
     <ClCompile Include="NormalizedColor.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Exception.cpp" />
     <ClCompile Include="Directx.cpp" />
     <ClCompile Include="Graphic.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
-    <ClCompile Include="Vec4.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="ClipBoard.h" />
+    <ClInclude Include="Float3.h" />
+    <ClInclude Include="Float4x4.h" />
     <ClInclude Include="NormalizedColor.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="Directx.h" />
     <ClInclude Include="Graphic.h" />
     <ClInclude Include="Stopwatch.h" />
-    <ClInclude Include="Vec4.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <CopyFileToFolders Include="Color.ps.hlsl">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="Color.vs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
