@@ -126,29 +126,44 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
+    <ClCompile Include="Char4.cpp" />
     <ClCompile Include="ClipBoard.cpp" />
+    <ClCompile Include="Direction.cpp" />
     <ClCompile Include="Float3.cpp" />
     <ClCompile Include="Float4x4.cpp" />
+    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ModelColor.cpp" />
     <ClCompile Include="NormalizedColor.cpp" />
     <ClCompile Include="Controller.cpp" />
     <ClCompile Include="Exception.cpp" />
     <ClCompile Include="Directx.cpp" />
     <ClCompile Include="Graphic.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderColor.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
+    <ClCompile Include="Unit.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
+    <ClInclude Include="Char4.h" />
     <ClInclude Include="ClipBoard.h" />
+    <ClInclude Include="Direction.h" />
     <ClInclude Include="Float3.h" />
     <ClInclude Include="Float4x4.h" />
+    <ClInclude Include="Float4x4_DESC.h" />
+    <ClInclude Include="Model.h" />
+    <ClInclude Include="ModelColor.h" />
     <ClInclude Include="NormalizedColor.h" />
     <ClInclude Include="Controller.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="Directx.h" />
     <ClInclude Include="Graphic.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderColor.h" />
     <ClInclude Include="Stopwatch.h" />
+    <ClInclude Include="Unit.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>

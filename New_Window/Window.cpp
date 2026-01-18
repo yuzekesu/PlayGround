@@ -1,12 +1,12 @@
 #include "Window.h"
-#include <libloaderapi.h>
 #include <Windows.h>
+#include <libloaderapi.h>
 
 const HWND& Window::Get_HWND() {
 	return _hwnd;
 }
 
-const SIZE& Window::GET_SIZE() {
+const SIZE& Window::GET_SIZE() const {
 	return _size;
 }
 
@@ -30,8 +30,7 @@ Window::Window() {
 }
 
 LRESULT Window::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
-	switch (msg)
-	{
+	switch (msg) {
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

@@ -3,11 +3,11 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 #include "Window.h"
+#include <Windows.h>
 #include <d3d11.h>
 #include <dxgi.h>
 #include <dxgicommon.h>
 #include <string>
-#include <Windows.h>
 #include <wrl/client.h>
 
 /// <summary>
@@ -19,9 +19,11 @@ class Directx {
 public:
 	Directx();
 	ComPtr<IDXGISwapChain> Get_SwapChain();
+	ComPtr<ID3D11Device> Get_Device();
 	ComPtr<ID3D11DeviceContext> Get_Context();
 	ComPtr<ID3D11DepthStencilView> Get_DepthStencilView();
 	ComPtr<ID3D11RenderTargetView> Get_RenderTargetView();
+	const Window& Get_Window() const { return _window; }
 	float Get_Refresh_Rate() const;
 private:
 	void Fill_Monitor_Info(ComPtr<IDXGIOutput> p_output);

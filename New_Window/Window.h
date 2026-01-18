@@ -1,14 +1,13 @@
 #pragma once
 #include <Windows.h>
-class Window
-{
+class Window {
 private:
 	HWND _hwnd;
 	SIZE _size;
 	RECT _rect;
 public:
 	const HWND& Get_HWND();
-	const SIZE& GET_SIZE();
+	const SIZE& GET_SIZE() const;
 	const RECT& Get_RECT();
 public:
 	Window();

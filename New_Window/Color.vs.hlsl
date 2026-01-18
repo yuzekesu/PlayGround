@@ -21,10 +21,10 @@ struct VS_OUTPUT
     float4 Color : COLOR0;
 };
 
-float4 main( VS_INPUT input ) : SV_POSITION
+VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT output;
-    output.Pos = mul(float4(input.Pos, 1.0f), WorldViewProj);
+    output.Pos = mul(WorldViewProj, float4(input.Pos, 1.0f));
     output.Color = input.Color;
-	return input;
+    return output;
 }

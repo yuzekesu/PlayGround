@@ -1,12 +1,12 @@
 #include "Directx.h"
 #include "Exception.h"
+#include <Windows.h>
 #include <d3d11.h>
 #include <d3dcommon.h>
 #include <dxgi.h>
 #include <dxgiformat.h>
 #include <dxgitype.h>
 #include<stdexcept>
-#include <Windows.h>
 #include <wrl/client.h>
 using namespace Microsoft::WRL;
 
@@ -17,47 +17,53 @@ Directx::Directx() {
 	Initialize_Info();
 	Initialize_SwapChain_Device_DeviceContext();
 	Initialize_RenderTargetView();
-	Initialize_DepthStencilState();
 	Initialize_DepthStencilView();
+	_p_context->OMSetRenderTargets(1, _p_render_target_view.GetAddressOf(), _p_depthstencil_view.Get());
+	Initialize_DepthStencilState();
+	Initialize_Rasterizer_State();
+	Initialize_ViewPort();
+
 }
 /// <summary>
 /// Exposing the swap chain.
 /// </summary>
 /// <returns></returns>
-ComPtr<IDXGISwapChain> Directx::Get_SwapChain()
-{
+ComPtr<IDXGISwapChain> Directx::Get_SwapChain() {
 	return _p_swap_chain;
+}
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
+ComPtr<ID3D11Device> Directx::Get_Device() {
+	return _p_device;
 }
 /// <summary>
 /// Exposing the device context.
 /// </summary>
 /// <returns></returns>
-ComPtr<ID3D11DeviceContext> Directx::Get_Context()
-{
+ComPtr<ID3D11DeviceContext> Directx::Get_Context() {
 	return _p_context;
 }
 /// <summary>
 /// Exposing the depth stencil view.
 /// </summary>
 /// <returns></returns>
-ComPtr<ID3D11DepthStencilView> Directx::Get_DepthStencilView()
-{
+ComPtr<ID3D11DepthStencilView> Directx::Get_DepthStencilView() {
 	return _p_depthstencil_view;
 }
 /// <summary>
 /// Exposing the render target view.
 /// </summary>
 /// <returns></returns>
-ComPtr<ID3D11RenderTargetView> Directx::Get_RenderTargetView()
-{
+ComPtr<ID3D11RenderTargetView> Directx::Get_RenderTargetView() {
 	return _p_render_target_view;
 }
 /// <summary>
 /// Exposing the refresh rate.
 /// </summary>
 /// <returns></returns>
-float Directx::Get_Refresh_Rate() const
-{
+float Directx::Get_Refresh_Rate() const {
 	if (_refresh_rate.Denominator == 0u) {
 		throw std::invalid_argument("Divide by Zero: Refresh rate.");
 	}
@@ -82,8 +88,7 @@ void Directx::Fill_VideoCard_Info(ComPtr<IDXGIAdapter> p_adapter) {
 /// The initialization of the depthstencil state.  
 /// Only one reference here.
 /// </summary>
-void Directx::Initialize_DepthStencilState()
-{
+void Directx::Initialize_DepthStencilState() {
 	D3D11_DEPTH_STENCIL_DESC depth_stencil_desc = Generate_DepthStencil_Desc();
 	CHECK(_p_device->CreateDepthStencilState(&depth_stencil_desc, _p_depthstencil_state.ReleaseAndGetAddressOf()));
 	_p_context->OMSetDepthStencilState(_p_depthstencil_state.Get(), 1);
@@ -91,8 +96,7 @@ void Directx::Initialize_DepthStencilState()
 /// <summary>
 /// Initializing the Depth stencil view with the buffer.
 /// </summary>
-void Directx::Initialize_DepthStencilView()
-{
+void Directx::Initialize_DepthStencilView() {
 	using namespace Microsoft::WRL;
 	ComPtr<ID3D11Texture2D> depth_stencil_buffer;
 	D3D11_TEXTURE2D_DESC depth_stencil_desc = Generate_DepthStencilBuffer_Desc();
@@ -159,8 +163,7 @@ void Directx::Initialize_Info() {
 /// <summary>
 /// Rasterizer state.
 /// </summary>
-void Directx::Initialize_Rasterizer_State()
-{
+void Directx::Initialize_Rasterizer_State() {
 	D3D11_RASTERIZER_DESC rasterizer_desc = Generate_Rasterizer_Desc();
 	_p_device->CreateRasterizerState(&rasterizer_desc, _p_rasterizer_state.ReleaseAndGetAddressOf());
 	_p_context->RSSetState(_p_rasterizer_state.Get());
@@ -168,9 +171,9 @@ void Directx::Initialize_Rasterizer_State()
 /// <summary>
 /// Create an interface to RenderTargetView that targeting the "back buffer", and save it as an attribute. Nothing special here.
 /// </summary>
-void Directx::Initialize_RenderTargetView()
-{
+void Directx::Initialize_RenderTargetView() {
 	using namespace Microsoft::WRL;
+	HRESULT hr;
 	ComPtr<ID3D11Texture2D> p_texture_2d;
 	CHECK(_p_swap_chain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)p_texture_2d.ReleaseAndGetAddressOf()));
 	CHECK(_p_device->CreateRenderTargetView(p_texture_2d.Get(), NULL, _p_render_target_view.ReleaseAndGetAddressOf()));
@@ -178,8 +181,7 @@ void Directx::Initialize_RenderTargetView()
 /// <summary>
 /// Creating an interface to SwapChain, Device and DeviceContext. This is based upon the choosen video card. So make sure the "_p_adapter" is filled before calling this.
 /// </summary>
-void Directx::Initialize_SwapChain_Device_DeviceContext()
-{
+void Directx::Initialize_SwapChain_Device_DeviceContext() {
 	D3D_FEATURE_LEVEL feature_level = D3D_FEATURE_LEVEL_11_0;
 	DXGI_SWAP_CHAIN_DESC swap_chain_desc = Generate_SwapChain_Desc();
 	CHECK(D3D11CreateDeviceAndSwapChain(_p_adapter.Get(), D3D_DRIVER_TYPE_UNKNOWN, NULL, D3D11_CREATE_DEVICE_DEBUG, &feature_level, 1, D3D11_SDK_VERSION, &swap_chain_desc, _p_swap_chain.ReleaseAndGetAddressOf(), _p_device.ReleaseAndGetAddressOf(), NULL, _p_context.ReleaseAndGetAddressOf()));
@@ -187,8 +189,7 @@ void Directx::Initialize_SwapChain_Device_DeviceContext()
 /// <summary>
 /// View port;
 /// </summary>
-void Directx::Initialize_ViewPort()
-{
+void Directx::Initialize_ViewPort() {
 	_viewport.Height = static_cast<float>(_window.GET_SIZE().cy);
 	_viewport.MaxDepth = 1.f;
 	_viewport.MinDepth = 0.f;
@@ -201,8 +202,7 @@ void Directx::Initialize_ViewPort()
 /// Nothing special here, just want to make a function for it.
 /// </summary>
 /// <returns>The description of a default swap chain.</returns>
-DXGI_SWAP_CHAIN_DESC Directx::Generate_SwapChain_Desc()
-{
+DXGI_SWAP_CHAIN_DESC Directx::Generate_SwapChain_Desc() {
 	DXGI_SWAP_CHAIN_DESC swap_chain_desc{};
 	swap_chain_desc.OutputWindow = _window.Get_HWND();
 	swap_chain_desc.Windowed = TRUE;
@@ -224,8 +224,7 @@ DXGI_SWAP_CHAIN_DESC Directx::Generate_SwapChain_Desc()
 /// Generating a default depth stencil description.
 /// </summary>
 /// <returns></returns>
-D3D11_DEPTH_STENCIL_DESC Directx::Generate_DepthStencil_Desc()
-{
+D3D11_DEPTH_STENCIL_DESC Directx::Generate_DepthStencil_Desc() {
 	D3D11_DEPTH_STENCIL_DESC depth_stencil_desc{};
 	depth_stencil_desc.StencilEnable = true;
 	depth_stencil_desc.StencilWriteMask = 0xff;
@@ -248,8 +247,7 @@ D3D11_DEPTH_STENCIL_DESC Directx::Generate_DepthStencil_Desc()
 /// Depth stencil view description.
 /// </summary>
 /// <returns></returns>
-D3D11_DEPTH_STENCIL_VIEW_DESC Directx::Generate_DepthStencilView_Desc()
-{
+D3D11_DEPTH_STENCIL_VIEW_DESC Directx::Generate_DepthStencilView_Desc() {
 	D3D11_DEPTH_STENCIL_VIEW_DESC depth_stencil_view_desc{};
 	depth_stencil_view_desc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depth_stencil_view_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
@@ -260,8 +258,7 @@ D3D11_DEPTH_STENCIL_VIEW_DESC Directx::Generate_DepthStencilView_Desc()
 /// Depth buffer description.
 /// </summary>
 /// <returns></returns>
-D3D11_TEXTURE2D_DESC Directx::Generate_DepthStencilBuffer_Desc()
-{
+D3D11_TEXTURE2D_DESC Directx::Generate_DepthStencilBuffer_Desc() {
 	D3D11_TEXTURE2D_DESC texture_2d_desc{};
 	texture_2d_desc.Width = _window.GET_SIZE().cx;
 	texture_2d_desc.Height = _window.GET_SIZE().cy;
@@ -280,8 +277,7 @@ D3D11_TEXTURE2D_DESC Directx::Generate_DepthStencilBuffer_Desc()
 /// The rasterizer description for the main scene.
 /// </summary>
 /// <returns></returns>
-D3D11_RASTERIZER_DESC Directx::Generate_Rasterizer_Desc()
-{
+D3D11_RASTERIZER_DESC Directx::Generate_Rasterizer_Desc() {
 	D3D11_RASTERIZER_DESC rasterizer_desc{};
 	rasterizer_desc.AntialiasedLineEnable = false;
 	rasterizer_desc.CullMode = D3D11_CULL_BACK;

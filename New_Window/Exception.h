@@ -11,15 +11,14 @@
 #endif // !NDEBUG
 
 class Exception : std::exception {
-private:
-	std::string _string;
-
 public:
+	Exception(const char* message);
 	const char* what();
 	static void Check(const char* file, const char* func, int line, HRESULT hr);
-
 private:
 	Exception() = delete;
 	Exception(const char* file, const char* func, int line, HRESULT hr);
 	void Extract_HRESULT_to_clipboard(HRESULT hr);
+private:
+	std::string _string;
 };

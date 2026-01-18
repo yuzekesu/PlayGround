@@ -1,8 +1,8 @@
 #include "ClipBoard.h"
 #include "Exception.h"
+#include <Windows.h>
 #include <ios>
 #include <sstream>
-#include <Windows.h>
 
 const char* Exception::what() {
 	return _string.c_str();
@@ -12,6 +12,10 @@ void Exception::Check(const char* file, const char* func, int line, HRESULT hr) 
 	if (FAILED(hr)) {
 		throw Exception(file, func, line, hr);
 	}
+}
+
+Exception::Exception(const char* message) {
+	_string = message;
 }
 
 Exception::Exception(const char* file, const char* func, int line, HRESULT hr) {
